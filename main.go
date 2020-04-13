@@ -1,8 +1,15 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/Favemus/config"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
+	// Config the server
+	config.LoadConfiguration()
+	config.InitDB()
+
 	r := InitRouter()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
