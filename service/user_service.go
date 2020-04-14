@@ -14,7 +14,7 @@ func NewUserService() *UserService {
 
 func (u *UserService) GetUserById(id uint64) (*model.User, error) {
 	user := model.User{}
-	err := config.DB.Select("id, name").Where("id = ?", id).First(&user).Error
+	err := config.DB.Select("id, email, created_at, updated_at").Where("id = ?", id).First(&user).Error
 	return &user, err
 }
 

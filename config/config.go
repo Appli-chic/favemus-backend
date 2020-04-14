@@ -13,6 +13,7 @@ type Config struct {
 	DatabaseName         string
 	DatabasePassword     string
 	DatabaseSSlActivated string
+	JwtSecret            string
 }
 
 var Conf Config
@@ -31,5 +32,6 @@ func LoadConfiguration() {
 		DatabaseName:         os.Getenv("DATABASE_NAME"),
 		DatabasePassword:     os.Getenv("DATABASE_PASSWORD"),
 		DatabaseSSlActivated: os.Getenv("DATABASE_SSL_ACTIVATED"),
+		JwtSecret:            os.Getenv("JWT_SECRET"),
 	}
 }
