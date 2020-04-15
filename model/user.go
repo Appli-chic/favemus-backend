@@ -4,6 +4,8 @@ import "github.com/jinzhu/gorm"
 
 type User struct {
 	gorm.Model
-	Email string
-	Hash  string
+	Email  string
+	Name   string
+	Hash   string
+	Tokens []Token `gorm:"foreignkey:UserId"`
 }

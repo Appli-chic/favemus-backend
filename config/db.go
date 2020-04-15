@@ -20,5 +20,8 @@ func InitDB() {
 	DB = db
 
 	// Migrate the schema
-	DB.AutoMigrate(&model.User{})
+	DB.AutoMigrate(&model.User{}, &model.Token{})
+
+	// Add Foreign keys
+	db.Model(&model.Token{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
 }
