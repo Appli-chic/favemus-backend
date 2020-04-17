@@ -41,7 +41,7 @@ func NewAuthController() *AuthController {
 func createAccessToken(user model.User) (string, error) {
 	var newUser = model.User{}
 	newUser.ID = user.ID
-	expiresAt := time.Now().Add(time.Duration(config.Conf.JwtTokenExpiration) * time.Millisecond)
+	expiresAt := time.Now().Add(time.Duration(config.Conf.JwtTokenExpiration) * time.Minute)
 	claims := UserClaim{
 		newUser,
 		jwt.StandardClaims{
@@ -59,7 +59,10 @@ func (a *AuthController) SignUp(c *gin.Context) {
 	// Retrieve the body
 	signUpUserForm := validator2.SignUpUserForm{}
 	if err := c.ShouldBindJSON(&signUpUserForm); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
 		return
 	}
 
@@ -69,7 +72,10 @@ func (a *AuthController) SignUp(c *gin.Context) {
 
 	// Check if the form is valid
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
 		return
 	}
 
@@ -144,7 +150,10 @@ func (a *AuthController) Login(c *gin.Context) {
 	// Retrieve the body
 	loginUserForm := validator2.LoginUserForm{}
 	if err := c.ShouldBindJSON(&loginUserForm); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
 		return
 	}
 
@@ -154,7 +163,10 @@ func (a *AuthController) Login(c *gin.Context) {
 
 	// Check if the form is valid
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
 		return
 	}
 
@@ -215,7 +227,10 @@ func (a *AuthController) RefreshAccessToken(c *gin.Context) {
 	// Retrieve the body
 	refreshingTokenForm := validator2.RefreshingTokenForm{}
 	if err := c.ShouldBindJSON(&refreshingTokenForm); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
 		return
 	}
 
@@ -225,7 +240,10 @@ func (a *AuthController) RefreshAccessToken(c *gin.Context) {
 
 	// Check if the form is valid
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
 		return
 	}
 
