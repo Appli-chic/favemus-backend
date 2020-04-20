@@ -14,3 +14,7 @@ type LoginUserForm struct {
 type RefreshingTokenForm struct {
 	RefreshToken string `validate:"required"`
 }
+
+type CheckEmailForm struct {
+	Email string `validate:"required,email"`
+}

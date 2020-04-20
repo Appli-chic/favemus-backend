@@ -18,19 +18,19 @@ func (u *UserService) GetUserById(id uint64) (*model.User, error) {
 	return &user, err
 }
 
-func (u *UserService) GetUserByEmail(email string) (model.User, error) {
+func (u *UserService) GetUserByEmail(email string) (*model.User, error) {
 	user := model.User{}
 	err := config.DB.Where("email = ?", email).First(&user).Error
-	return user, err
+	return &user, err
 }
 
-func (u *UserService) GetUserFromRefreshToken(refreshToken string) (model.User, error) {
+func (u *UserService) GetUserFromRefreshToken(refreshToken string) (*model.User, error) {
 	user := model.User{}
 	err := config.DB.
 		Joins("left join tokens on tokens.user_id = users.id").
 		Where("tokens.token = ?", refreshToken).
 		First(&user).Error
-	return user, err
+	return &user, err
 }
 
 func (u *UserService) Save(user *model.User) error {

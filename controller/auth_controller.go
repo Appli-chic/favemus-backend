@@ -38,7 +38,7 @@ func NewAuthController() *AuthController {
 }
 
 // Create the access token with the service information
-func createAccessToken(user model.User) (string, error) {
+func createAccessToken(user *model.User) (string, error) {
 	var newUser = model.User{}
 	newUser.ID = user.ID
 	expiresAt := time.Now().Add(time.Duration(config.Conf.JwtTokenExpiration) * time.Minute)
@@ -89,8 +89,8 @@ func (a *AuthController) SignUp(c *gin.Context) {
 	}
 
 	// Add the service in the database
-	user := model.User{Email: signUpUserForm.Email, Hash: string(hashedPassword), Name: signUpUserForm.Name}
-	err = a.userService.Save(&user)
+	user := &model.User{Email: signUpUserForm.Email, Hash: string(hashedPassword), Name: signUpUserForm.Name}
+	err = a.userService.Save(user)
 
 	// Check if the email exists
 	if err != nil {
@@ -143,6 +143,45 @@ func (a *AuthController) SignUp(c *gin.Context) {
 		"refreshToken": refreshToken,
 		"expiresIn":    config.Conf.JwtTokenExpiration,
 	})
+}
+
+// Check if the email exists
+func (a *AuthController) CheckEmail(c *gin.Context) {
+	// Retrieve the body
+	checkEmailForm := validator2.CheckEmailForm{}
+	if err := c.ShouldBindJSON(&checkEmailForm); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
+		return
+	}
+
+	// Validate the form
+	validate := validator.New()
+	err := validate.Struct(checkEmailForm)
+
+	// Check if the form is valid
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
+		return
+	}
+
+	// Find the service
+	user, err := a.userService.GetUserByEmail(checkEmailForm.Email)
+
+	if user != nil && user.Email != "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "The email already exists",
+			"code":  codeErrorEmailAlreadyExists,
+		})
+		return
+	}
+
+	c.JSONP(http.StatusOK, gin.H{})
 }
 
 // Login the service and send back the access token and the refresh token

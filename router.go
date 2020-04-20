@@ -19,6 +19,7 @@ func InitRouter() *gin.Engine {
 		// Auth routes
 		api.POST("/auth/signup", authController.SignUp)
 		api.POST("/auth/login", authController.Login)
+		api.POST("/auth/check/email", authController.CheckEmail)
 		api.POST("/auth/refresh", authController.RefreshAccessToken)
 
 		// Protected routes
